@@ -121,11 +121,13 @@ router.put('/:id', async(req, res,next) => {
             { $set: secondChanceItem},
             {returnDocument: 'after'}
         );
+
+
         //Step 5: task 5 - insert code here
         if(updateItem){
            return res.json({"uploaded":"success"});
         }
-        return res.json({"uploaded":"failed"});
+       return res.json({"uploaded":"failed"});
     } catch (e) {
         next(e);
     }
@@ -147,7 +149,7 @@ router.delete('/:id', async(req, res,next) => {
         }
         //Step 6: task 4 - insert code here
         await collection.deleteOne({id});
-         return res.json({"deleted":"success"});
+       return res.json({"deleted":"success"});
     } catch (e) {
         next(e);
     }
