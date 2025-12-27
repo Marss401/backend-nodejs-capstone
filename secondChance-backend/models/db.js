@@ -7,6 +7,7 @@ let url = `${process.env.MONGO_URL}`;
 
 let dbInstance = null;
 const dbName = `${process.env.MONGO_DB}`;
+console.log("dbname:", dbName);
 
 async function connectToDatabase() {
     if (dbInstance){

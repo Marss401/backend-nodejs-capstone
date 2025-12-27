@@ -82,10 +82,9 @@ router.post('/login', async (req, res) => {
             // Task 6: Create JWT authentication if passwords match with user._id as payload
             let payload = {
                 user: {
-                    id: theUser._id.toString(),
+                    id: authenticatedUser._id.toString(),
                 },
             };
-
             //Create JWT authentication if passwords match
             const authtoken = jwt.sign(payload, JWT_SECRET)
             logger.info('User logged in successfully');
@@ -127,15 +126,15 @@ router.put('/update', async (req, res) => {
         if (!existingUser) {
             return res.status(404).json({ error: "User not found" });
         }
+        existingUser.firstName = req.body.firstName;
         existingUser.updatedAt = new Date();
 
         // Task 6: Update the user credentials in the database
        const updatedUser = await collection.findOneAndUpdate(
     { email },
-    { $set: { firstName: req.body.firstName, updatedAt: new Date() } },
+    { $set: existingUser },
     { returnDocument: 'after' }
 );
-
         // Task 7: Create JWT authentication with `user._id` as a payload using the secret key from the .env file
         const payload = {
         user: {
@@ -143,7 +142,12 @@ router.put('/update', async (req, res) => {
             },
         };
         const authtoken = jwt.sign(payload, JWT_SECRET);
-        res.json({authtoken});
+        logger.info('User updated successfully');
+        res.json({
+            message: "User updated successfully",
+            user: updatedUser.value,
+            authtoken
+          });
     } catch (e) {
          return res.status(500).send('Internal server error');
     }
