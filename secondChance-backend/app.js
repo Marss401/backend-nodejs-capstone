@@ -6,6 +6,7 @@ const cors = require('cors');
 const pinoLogger = require('./logger');
 //const secondChanceItemsRoutes = require('./routes/secondChanceItemsRoutes');
 const connectToDatabase = require('./models/db');
+const path = require('path');
 const {loadData} = require("./util/import-mongo/index");
 
 
@@ -21,7 +22,8 @@ connectToDatabase().then(() => {
 
 
 app.use(express.json());
-
+// Serve static files from backend public folder
+app.use('/images', express.static(path.join(process.cwd(), 'public/images')));
 
 // Route files
 

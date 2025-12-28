@@ -26,14 +26,13 @@ router.post('/register', async (req, res) => {
         //verify if user credentials already exist in the databases
 
         const existingEmail = await collection.findOne({ email: req.body.email });
-
         if (existingEmail) {
             logger.error('user already exists')
             return res.status(400).json({ error: 'user already exists!' });
         }
         //hash to encrypt password so that it is unreadable in the database
         const salt = await bcryptjs.genSalt(10); //length of the encrypted password
-        const hashPassword = await bcryptjs.hashPassword(req.body.password, salt);
+        const hashPassword = await bcryptjs.hash(req.body.password, salt);
         //insert the user into the database
         const user = await collection.insertOne(
             {
@@ -47,7 +46,7 @@ router.post('/register', async (req, res) => {
         //JWT authentication
         const payload = {
             user: {
-                id: user.insertId,
+                id: user.insertedId,
             }
         };
         const authtoken = jwt.sign(payload, JWT_SECRET);
@@ -55,9 +54,10 @@ router.post('/register', async (req, res) => {
         //Log the successful registration using the logger
         logger.info('User registered successfully');
         //Return the user email and token as JSON
-        res.json({ authtoken, email });
+        res.json({ authtoken, email: req.body.email });
+;
     } catch (e) {
-        return res.status(500).send('Internal server error');
+       return res.status(500).json({ error: 'Internal server error' });
     }
 });
 router.post('/login', async (req, res) => {
@@ -70,10 +70,10 @@ router.post('/login', async (req, res) => {
          const authenticatedUser = await collection.findOne({ email: req.body.email });
         // Task 4: Check if the password matches the encrypted password and send appropriate message on mismatch
         if(authenticatedUser){
-            let result = await bcryptjs.compare(req.body.password, authenticatedUser.hashPassword);
+            let result = await bcryptjs.compare(req.body.password, authenticatedUser.password);
             if(!result){
                 logger.error('password does not match')
-                return res.status(404).json('password does not match')
+                return res.status(404).json({ error: 'Password does not match' });
             }
             // Task 5: Fetch user details from a database
             const userName = authenticatedUser.firstName;
@@ -98,7 +98,7 @@ router.post('/login', async (req, res) => {
         }
     catch (e) {
         logger.error(e);
-         return res.status(500).send('Internal server error');
+        return res.status(500).json({ error: 'Internal server error' });
 
     }
 });
