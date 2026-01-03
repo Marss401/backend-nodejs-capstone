@@ -16,7 +16,7 @@ function RegisterPage() {
 
     const handleRegister = async () => {
         //api call
-        const response = await fetch(`${urlConfig.backendUrl}/api/auth/register`, {
+        const response = await fetch(`${urlConfig.backendUrl}/api/secondchance/auth/register`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

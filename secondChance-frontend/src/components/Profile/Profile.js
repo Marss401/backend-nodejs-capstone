@@ -64,7 +64,7 @@ const handleSubmit = async (e) => {
     }
 
     const payload = { ...updatedDetails };
-    const response = await fetch(`${urlConfig.backendUrl}/api/auth/update`, {
+    const response = await fetch(`${urlConfig.backendUrl}/api/secondchance/auth/update`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${authtoken}`,

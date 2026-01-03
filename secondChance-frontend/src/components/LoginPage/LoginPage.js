@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {urlConfig} from '../../config';
+import { urlConfig } from '../../config';
 import { useAppContext } from '../../context/AppContext';
 
 import './LoginPage.css';
@@ -15,45 +15,48 @@ function LoginPage() {
 
     useEffect(() => {
         if (sessionStorage.getItem('auth-token')) {
-          navigate('/app')
+            navigate('/app')
         }
-      }, [navigate])
+    }, [navigate])
 
     const handleLogin = async (e) => {
         e.preventDefault();
         //api call
-        const res = await fetch(`${urlConfig.backendUrl}/api/auth/login`, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': bearerToken ? `Bearer ${bearerToken}` : '', // Include Bearer token if available
-          },
-          body: JSON.stringify({    
-            email: email,
-            password: password,
-          })
+        const res = await fetch(`${urlConfig.backendUrl}/api/secondchance/auth/login`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': bearerToken ? `Bearer ${bearerToken}` : '', // Include Bearer token if available
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            })
         });
-    
-        const json = await res.json();
-        console.log('Json',json);
-        if (json.authtoken) {
-          sessionStorage.setItem('auth-token', json.authtoken);
-          sessionStorage.setItem('name', json.userName);
-          sessionStorage.setItem('email', json.userEmail);
 
-          navigate('/app');
-          setIsLoggedIn(true);
-        } else {
-          document.getElementById("email").value="";
-          document.getElementById("password").value="";
-          setIncorrect("Wrong password. Try again.");
-          setTimeout(() => {
-            setIncorrect("");
-          }, 2000);
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
         }
-    
-      }
-    
+        const json = await res.json();
+        console.log('Json', json);
+        if (json.authtoken) {
+            sessionStorage.setItem('auth-token', json.authtoken);
+            sessionStorage.setItem('name', json.userName);
+            sessionStorage.setItem('email', json.userEmail);
+
+            navigate('/app');
+            setIsLoggedIn(true);
+        } else {
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+            setIncorrect("Wrong password. Try again.");
+            setTimeout(() => {
+                setIncorrect("");
+            }, 2000);
+        }
+
+    }
+
 
     return (
         <div className="container mt-5">
@@ -63,26 +66,26 @@ function LoginPage() {
                         <h2 className="text-center mb-4 font-weight-bold">Login</h2>
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">Email</label>
-                            <input 
+                            <input
                                 id="email"
                                 type="text"
                                 className="form-control"
                                 placeholder="Enter your email"
                                 value={email}
-                                onChange={(e) => {setEmail(e.target.value); setIncorrect("")}}
+                                onChange={(e) => { setEmail(e.target.value); setIncorrect("") }}
                             />
                         </div>
                         <div className="mb-4">
                             <label htmlFor="password" className="form-label">Password</label>
-                            <input 
+                            <input
                                 id="password"
                                 type="password"
                                 className="form-control"
                                 placeholder="Enter your password"
                                 value={password}
-                                onChange={(e) => {setPassword(e.target.value);setIncorrect("")}}
+                                onChange={(e) => { setPassword(e.target.value); setIncorrect("") }}
                             />
-                            <span style={{color:'red',height:'.5cm',display:'block',fontStyle:'italic',fontSize:'12px'}}>{incorrect}</span>
+                            <span style={{ color: 'red', height: '.5cm', display: 'block', fontStyle: 'italic', fontSize: '12px' }}>{incorrect}</span>
                         </div>
                         <button className="btn btn-primary w-100 mb-3" onClick={handleLogin}>Login</button>
                         <p className="mt-4 text-center">
