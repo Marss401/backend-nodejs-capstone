@@ -31,7 +31,6 @@ const Profile = () => {
                   name: name,
                   email:email
                 };
-        
                 setUserDetails(storedUserDetails);
                 setUpdatedDetails(storedUserDetails);
               }
@@ -51,9 +50,9 @@ setUpdatedDetails({
   [e.target.name]: e.target.value,
 });
 };
+
 const handleSubmit = async (e) => {
   e.preventDefault();
-
   try {
     const authtoken = sessionStorage.getItem("auth-token");
     const email = sessionStorage.getItem("email"); // Get the email from session storage

@@ -1,44 +1,43 @@
-const express = require('express');
-const router = express.Router();
-const connectToDatabase = require('../models/db');
+const express = require('express')
+const router = express.Router()
+const connectToDatabase = require('../models/db')
 
 // Search for gifts
 router.get('/', async (req, res, next) => {
-    try {
-        // Task 1: Connect to MongoDB
-        const db = await connectToDatabase();
-        const collection = db.collection("secondChanceItems");
+  try {
+    // Task 1: Connect to MongoDB
+    const db = await connectToDatabase()
+    const collection = db.collection('secondChanceItems')
 
+    // Initialize the query object
+    const query = {}
 
-        // Initialize the query object
-        let query = {};
-
-        // Name filter (partial, case-insensitive)
-        if (req.query.name && req.query.name.trim() !== '') {
-            query.name = { $regex: req.query.name, $options: "i" };
-        }
-
-        // Other filters
-        if (req.query.category) {
-            query.category = req.query.category;
-        }
-
-        if (req.query.condition) {
-            query.condition = req.query.condition;
-        }
-
-        if (req.query.age_years) {
-            query.age_years = { $lte: Number(req.query.age_years) };
-        }
-
-        console.log("Search query:", query);
-
-        // Task 4: Fetch filtered gifts
-        const items = await collection.find(query).toArray();
-        res.json(items);
-    } catch (e) {
-        next(e);
+    // Name filter (partial, case-insensitive)
+    if (req.query.name && req.query.name.trim() !== '') {
+      query.name = { $regex: req.query.name, $options: 'i' }
     }
-});
 
-module.exports = router;
+    // Other filters
+    if (req.query.category) {
+      query.category = req.query.category
+    }
+
+    if (req.query.condition) {
+      query.condition = req.query.condition
+    }
+
+    if (req.query.age_years) {
+      query.age_years = { $lte: Number(req.query.age_years) }
+    }
+
+    console.log('Search query:', query)
+
+    // Task 4: Fetch filtered gifts
+    const items = await collection.find(query).toArray()
+    res.json(items)
+  } catch (e) {
+    next(e)
+  }
+})
+
+module.exports = router

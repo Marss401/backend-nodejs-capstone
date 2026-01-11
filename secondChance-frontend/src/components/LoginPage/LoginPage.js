@@ -57,7 +57,6 @@ function LoginPage() {
 
     }
 
-
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
