@@ -55,8 +55,10 @@ router.post('/', upload.single('file'), async (req, res, next) => {
       secondChanceItem.id = (parseInt(item.id + 1).toString())
     })
     // Step 3: task 5 - insert code here
-    const dateAdded = Math.floor(new Date().getTime() / 1000)
-    secondChanceItem.dateAdded = dateAdded
+    // eslint-disable-next-line
+    const date_added = Math.floor(new Date().getTime() / 1000)
+    // eslint-disable-next-line
+    secondChanceItem.date_added = date_added
     // Step 3: Task 6 - insert code here
     secondChanceItem = await collection.insertOne(secondChanceItem)
     res.status(201).json(secondChanceItem)

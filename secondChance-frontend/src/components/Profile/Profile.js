@@ -76,6 +76,7 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       // Update the user details in session storage
       sessionStorage.setItem("name", updatedDetails.name);
+      sessionStorage.setItem("email", updatedDetails.email);
       setUserDetails(updatedDetails);
       setEditMode(false);
       setUserName(updatedDetails.name);
